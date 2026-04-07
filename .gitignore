@@ -1,0 +1,5 @@
+# go
+bin/
+build/
+dist/
+.env
