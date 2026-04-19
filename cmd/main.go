@@ -7,6 +7,7 @@ import (
 	"catetin-backend/internal/config"
 	"catetin-backend/internal/database"
 	"catetin-backend/internal/modules/auth"
+	"catetin-backend/internal/modules/transaction"
 )
 
 func main() {
@@ -14,9 +15,11 @@ func main() {
 	database.Connect()
 
 	authModule := auth.NewModule(database.DB)
+	transactionModule := transaction.NewModule(database.DB)
 
 	app := app.New(
 		authModule,
+		transactionModule,
 	)
 
 	app.Setup()

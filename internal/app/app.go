@@ -3,11 +3,11 @@ package app
 import (
 	_ "catetin-backend/docs"
 
-	swagger "github.com/swaggo/fiber-swagger"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/swagger"
 
 	"log"
-
-	"github.com/gofiber/fiber/v2"
 )
 
 type App struct {
@@ -17,6 +17,8 @@ type App struct {
 
 func New(modules ...Module) *App {
 	app := fiber.New()
+
+	app.Use(cors.New())
 
 	return &App{
 		Fiber:   app,
@@ -41,7 +43,7 @@ func (a *App) Setup() {
 	})
 
 	// Swagger
-	a.Fiber.Get("/swagger/*", swagger.WrapHandler)
+	a.Fiber.Get("/swagger/*", swagger.HandlerDefault)
 
 	// log routes
 	log.Println("=== REGISTERED ROUTES ===")

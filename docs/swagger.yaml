@@ -5,6 +5,27 @@ definitions:
       access_token:
         type: string
     type: object
+  dto.CreateTransactionRequest:
+    properties:
+      amount:
+        minimum: 1
+        type: integer
+      category:
+        type: string
+      date:
+        description: YYYY-MM-DD
+        type: string
+      note:
+        type: string
+      type:
+        description: income | expense
+        type: string
+    required:
+    - amount
+    - category
+    - date
+    - type
+    type: object
   dto.LoginRequest:
     properties:
       email:
@@ -23,7 +44,26 @@ definitions:
         example: "123456"
         type: string
     type: object
-host: localhost:3000
+  dto.UpdateTransactionRequest:
+    properties:
+      amount:
+        minimum: 1
+        type: integer
+      category:
+        type: string
+      date:
+        description: YYYY-MM-DD
+        type: string
+      note:
+        type: string
+      type:
+        type: string
+    required:
+    - amount
+    - category
+    - date
+    - type
+    type: object
 info:
   contact: {}
   description: Modular Hexagonal API
@@ -86,4 +126,189 @@ paths:
       summary: Register user
       tags:
       - auth
+  /api/v1/transactions:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of transactions with pagination and filtering
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: limit
+        type: integer
+      - description: Filter by category
+        in: query
+        name: category
+        type: string
+      - description: Filter by type (income | expense)
+        in: query
+        name: type
+        type: string
+      - description: Start date YYYY-MM-DD
+        in: query
+        name: start_date
+        type: string
+      - description: End date YYYY-MM-DD
+        in: query
+        name: end_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get transactions
+      tags:
+      - transactions
+    post:
+      consumes:
+      - application/json
+      description: Creates a new financial transaction (income/expense)
+      parameters:
+      - description: Transaction Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a transaction
+      tags:
+      - transactions
+  /api/v1/transactions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes an existing transaction by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a transaction
+      tags:
+      - transactions
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing transaction by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Transaction Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a transaction
+      tags:
+      - transactions
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
