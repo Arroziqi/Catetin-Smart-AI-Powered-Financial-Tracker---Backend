@@ -3,17 +3,23 @@ package main
 import (
 	"log"
 
-	"github.com/gofiber/fiber/v2"
+	"catetin-backend/internal/app"
+	"catetin-backend/internal/config"
+	"catetin-backend/internal/database"
+	"catetin-backend/internal/modules/auth"
 )
 
 func main() {
-	app := fiber.New()
+	config.LoadEnv()
+	database.Connect()
 
-	app.Get("/health", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{
-			"status": "ok",
-		})
-	})
+	authModule := auth.NewModule(database.DB)
 
-	log.Fatal(app.Listen(":5000"))
+	app := app.New(
+		authModule,
+	)
+
+	app.Setup()
+
+	log.Fatal(app.Fiber.Listen(":3000"))
 }

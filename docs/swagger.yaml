@@ -1,0 +1,89 @@
+basePath: /
+definitions:
+  dto.AuthResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        example: user@mail.com
+        type: string
+      password:
+        example: "123456"
+        type: string
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        example: user@mail.com
+        type: string
+      password:
+        example: "123456"
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Modular Hexagonal API
+  title: Catetin API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Register Data
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register user
+      tags:
+      - auth
+swagger: "2.0"
